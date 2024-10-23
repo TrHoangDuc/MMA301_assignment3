@@ -9,11 +9,12 @@ import {
   ToastAndroid,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Rating } from "react-native-ratings";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment"; // For date formatting
+import { useFocusEffect } from "@react-navigation/native";
 
 function DetailScreen({ route, navigation }) {
   const { productTypeId } = route.params || {};
@@ -36,22 +37,33 @@ function DetailScreen({ route, navigation }) {
     }
   };
 
+  const checkFavoriteStatus = async () => {
+    const favorites = await AsyncStorage.getItem("favorites");
+    if (favorites) {
+      const favoritesList = JSON.parse(favorites);
+      setIsFavorite(
+        favoritesList.some((favItem) => favItem.id === productDetail.id)
+      );
+    }
+  };
+
   useEffect(() => {
-    const checkFavoriteStatus = async () => {
-      const favorites = await AsyncStorage.getItem("favorites");
-      if (favorites) {
-        const favoritesList = JSON.parse(favorites);
-        setIsFavorite(favoritesList.some((favItem) => favItem.id === productDetail.id));
-      }
-    };
     checkFavoriteStatus();
-  }, [productDetail.id]);
+  }, [productDetail.id, isFavorite]);
+
+  useFocusEffect(
+    useCallback(() => {
+      checkFavoriteStatus();
+    }, [productDetail.id, isFavorite])
+  );
 
   const handleFavoritePress = async () => {
     const favorites = await AsyncStorage.getItem("favorites");
     let favoritesList = favorites ? JSON.parse(favorites) : [];
     if (isFavorite) {
-      favoritesList = favoritesList.filter((favItem) => favItem.id !== productDetail.id);
+      favoritesList = favoritesList.filter(
+        (favItem) => favItem.id !== productDetail.id
+      );
       await AsyncStorage.setItem("favorites", JSON.stringify(favoritesList));
       ToastAndroid.show("Removed product from favorite", ToastAndroid.SHORT);
     } else {

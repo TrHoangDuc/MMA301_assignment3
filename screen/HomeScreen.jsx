@@ -80,12 +80,6 @@ function HomeScreen() {
 
   const uniqueBrands = getUniqueBrands(products);
 
-  // const data = [
-  //   { id: "1", source: require("../assets/Group 354.png") },
-  //   { id: "2", source: require("../assets/Group 354.png") },
-  //   { id: "3", source: require("../assets/Group 354.png") },
-  // ];
-
   const renderCategoryItem = ({ item: brand }) => (
     <TouchableOpacity onPress={() => handleSelectCategory(brand)}>
       <CategoryCart title={brand} selected={selectedCategory === brand} />

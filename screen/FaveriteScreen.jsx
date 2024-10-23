@@ -221,7 +221,7 @@ function FaveriteScreen({ navigation }) {
 
   const renderHeader = () => (
     <View className="flex flex-row justify-between px-3 overflow-hidden py-2">
-      <Text className="text-xl font-bold">You have {favorites.length} item</Text>
+      <Text className="text-xl font-bold">You have {favorites.length} favorite item</Text>
       <TouchableOpacity onPress={handleRemoveAllFavorites}>
         <Text className="text-lg text-red-500">Remove all</Text>
       </TouchableOpacity>
